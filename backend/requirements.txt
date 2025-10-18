@@ -1,0 +1,28 @@
+# Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.6.0
+
+# MongoDB Database
+motor==3.6.0  # Async MongoDB driver
+pymongo==4.9.0  # MongoDB driver (compatible with motor 3.6.0)
+beanie==1.27.0  # ODM for MongoDB
+
+# LLM Integration - Google Gemini
+google-generativeai==0.8.3
+
+# AWS Integration
+boto3==1.35.90  # AWS SDK
+botocore==1.35.90
+
+# Utilities
+python-dotenv==1.0.0
+python-multipart==0.0.6
+
+# Date handling
+python-dateutil==2.8.2
+
+# Testing
+pytest==7.4.4
+httpx==0.26.0
