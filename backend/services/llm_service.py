@@ -48,12 +48,13 @@ class LLMService:
     def _generate_with_gemini(self, system_prompt: str, user_prompt: str) -> LLMPlanResponse:
         """Generate plan using Google Gemini API"""
         # Combine system and user prompts for Gemini
-        full_prompt = f"{system_prompt}\n\n{user_prompt}\n\nIMPORTANT: Respond with valid JSON only, no markdown formatting."
+        full_prompt = f"{system_prompt}\n\n{user_prompt}\n\nIMPORTANT: Respond with valid JSON only, no markdown formatting. Ensure all strings are properly escaped."
         
         # Configure generation parameters
         generation_config = genai.GenerationConfig(
             temperature=0.7,
-            max_output_tokens=4096,
+            max_output_tokens=8192,  # Increased from 4096 to allow longer responses
+            response_mime_type="application/json"  # Force JSON response
         )
         
         # Generate response
@@ -76,7 +77,14 @@ class LLMService:
         content = content.strip()
         
         # Parse JSON
-        plan_data = json.loads(content)
+        try:
+            plan_data = json.loads(content)
+        except json.JSONDecodeError as e:
+            print(f"ERROR: JSON parse error at line {e.lineno}: {e.msg}")
+            print(f"Content preview: {content[:500]}...")
+            raise
+        
+        # Create LLMPlanResponse - Pydantic will validate and convert
         return LLMPlanResponse(**plan_data)
     
     def _get_system_prompt(self) -> str:

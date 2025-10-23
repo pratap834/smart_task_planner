@@ -4,7 +4,12 @@ uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.6.0
 
-# Database
+# Database - MongoDB
+motor==3.7.1
+pymongo==4.15.3
+beanie==2.0.0
+
+# Database - SQL (optional)
 sqlalchemy==2.0.36
 alembic==1.14.0
 

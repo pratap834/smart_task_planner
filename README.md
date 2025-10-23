@@ -6,8 +6,32 @@ An AI-powered task planning system that transforms user goals into detailed, act
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+## 🎥 Demo Video
+
+[![Watch Demo](https://img.shields.io/badge/📹_Record_Your_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](DEMO_GUIDE.md)
+
+**Complete demo recording guide available:** See [DEMO_GUIDE.md](DEMO_GUIDE.md) for step-by-step instructions on creating a professional demo video.
+
+> **Quick Demo:** Submit a goal like "Launch a product in 2 weeks" and get a complete task breakdown with dependencies, timelines, and critical path analysis in 3-5 seconds!
+
+## ✅ Project Requirements
+
+**Objective:** Break user goals into actionable tasks with timelines using AI reasoning
+
+This project fully implements all requirements:
+- ✅ **Input:** Goal text (e.g., "Launch a product in 2 weeks")
+- ✅ **Output:** Task breakdown, dependencies, estimated timelines
+- ✅ **Frontend:** Web interface to submit goals & view plans
+- ✅ **Backend API:** FastAPI to process input & generate plans
+- ✅ **Database:** MongoDB for task storage
+- ✅ **LLM Integration:** Google Gemini for reasoning & task generation
+
+📄 **Detailed requirements verification:** [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md)
+
 ## 📋 Table of Contents
 
+- [Demo Video](#-demo-video)
+- [Project Requirements](#-project-requirements)
 - [Overview](#overview)
 - [Features](#features)
 - [Architecture](#architecture)
@@ -102,6 +126,72 @@ Smart Task Planner uses Google Gemini AI to break down complex goals into struct
 - Vanilla HTML/CSS/JavaScript
 - Responsive design
 - Fetch API for backend communication
+
+### LLM Prompt Engineering
+
+The system uses sophisticated prompts to guide the AI in generating high-quality task breakdowns.
+
+**System Prompt (Defines AI Behavior):**
+```
+You are an expert project planner and task breakdown specialist. Your role is to:
+1. Analyze user goals and break them down into actionable tasks
+2. Estimate realistic task durations (1-3 days per task)
+3. Identify task dependencies and create a logical sequence
+4. Respect user constraints (deadlines, work hours, unavailable dates)
+5. Identify critical path tasks and high-risk areas
+6. Provide clear, detailed task descriptions
+```
+
+**User Prompt Example:**
+```
+Goal: Launch a mobile app product in 2 weeks
+
+Plan Type: MODERATE - Balance speed and safety, some parallel tasks
+
+Constraints:
+- Deadline: 2025-11-07T23:59:59
+- Max work hours per day: 8
+- No work on weekends
+- Unavailable dates: 2025-10-28, 2025-10-29
+
+Generate a detailed task breakdown with dependencies, durations, and priorities.
+```
+
+**AI Response (JSON):**
+```json
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Requirements & Planning",
+      "description": "Define core features, user stories, and technical architecture",
+      "duration_days": 1,
+      "depends_on": [],
+      "priority": "High",
+      "confidence": 0.95
+    },
+    {
+      "id": "T2",
+      "title": "UI/UX Design",
+      "description": "Create wireframes, mockups, and user flow diagrams",
+      "duration_days": 2,
+      "depends_on": ["T1"],
+      "priority": "High",
+      "confidence": 0.90
+    }
+  ],
+  "plan_summary": "10-task plan for mobile app launch with 12 working days..."
+}
+```
+
+**Key Prompt Features:**
+- ✅ Structured output format (JSON schema)
+- ✅ Context-rich instructions
+- ✅ Constraint integration
+- ✅ Plan type adaptation (aggressive/moderate/conservative)
+- ✅ Fallback handling for API failures
+
+See `backend/services/llm_service.py` for complete implementation.
 
 ## 🚀 Installation
 

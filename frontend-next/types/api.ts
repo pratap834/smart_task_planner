@@ -58,13 +58,17 @@ export interface Goal {
 }
 
 export interface PlanGenerateResponse {
+  id: number;
   goal_id: number;
-  plan_id: number;
-  tasks: Task[];
+  plan_type: string;
   critical_path: string[];
   plan_summary: string;
-  total_duration_days: number;
-  estimated_completion: string;
+  total_duration_days?: number;
+  estimated_completion?: string;
+  plan_data?: any;
+  tasks: Task[];
+  created_at: string;
+  updated_at?: string;
 }
 
 export interface HealthCheck {

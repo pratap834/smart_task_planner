@@ -16,19 +16,61 @@ export function PlanView({ plan }: PlanViewProps) {
   const handleTaskToggle = (taskId: string, currentStatus: boolean) => {
     updateTask.mutate({
       taskId,
-      data: { is_completed: !currentStatus },
+      data: { 
+        is_completed: !currentStatus,
+        status: !currentStatus ? 'completed' : 'pending'
+      },
     });
   };
 
   const criticalTasks = plan.tasks.filter((t) => plan.critical_path?.includes(t.task_id));
   const nonCriticalTasks = plan.tasks.filter((t) => !plan.critical_path?.includes(t.task_id));
 
+  // Format plan summary for better readability
+  const formatPlanSummary = (summary: string) => {
+    // Split on common sentence indicators
+    const sentences = summary.split(/(?<=[.!?])\s+/);
+    
+    // Group sentences into paragraphs (every 2-3 sentences)
+    const paragraphs: string[] = [];
+    let currentParagraph: string[] = [];
+    
+    sentences.forEach((sentence, index) => {
+      currentParagraph.push(sentence);
+      
+      // Create new paragraph every 2-3 sentences or at specific keywords
+      if (
+        currentParagraph.length >= 3 ||
+        sentence.includes('critical path') ||
+        sentence.includes('The plan concludes') ||
+        sentence.includes('Key tasks') ||
+        (index === sentences.length - 1)
+      ) {
+        paragraphs.push(currentParagraph.join(' '));
+        currentParagraph = [];
+      }
+    });
+    
+    return paragraphs;
+  };
+
+  const summaryParagraphs = formatPlanSummary(plan.plan_summary);
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Project Plan</h2>
-        <p className="text-gray-600 mb-6">{plan.plan_summary}</p>
+        
+        {/* Plan Summary */}
+        <div className="mb-6 space-y-3">
+          <h3 className="text-lg font-semibold text-gray-800">Plan Overview</h3>
+          {summaryParagraphs.map((paragraph, index) => (
+            <p key={index} className="text-gray-700 leading-relaxed">
+              {paragraph}
+            </p>
+          ))}
+        </div>
 
         {/* Progress */}
         <div className="mb-6">

@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     
     # Google Gemini Configuration (Default LLM Provider)
     GEMINI_API_KEY: str
-    GEMINI_MODEL: str = "gemini-1.5-flash"
+    GEMINI_MODEL: str = "gemini-pro"
     
     # MongoDB Configuration
     MONGODB_URL: str = "mongodb://localhost:27017"

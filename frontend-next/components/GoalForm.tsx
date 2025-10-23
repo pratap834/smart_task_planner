@@ -75,7 +75,7 @@ export function GoalForm({ onSuccess }: GoalFormProps) {
         <textarea
           {...register('goal_text')}
           rows={4}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none text-gray-900 bg-white placeholder-gray-400"
           placeholder="e.g., Build a full-stack e-commerce website with payment integration, user authentication, and admin dashboard"
         />
         {errors.goal_text && (
@@ -90,11 +90,11 @@ export function GoalForm({ onSuccess }: GoalFormProps) {
         </label>
         <select
           {...register('plan_type')}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
         >
-          <option value="aggressive">Aggressive (Fast, 8-9 tasks)</option>
-          <option value="moderate">Moderate (Balanced, 10-12 tasks)</option>
-          <option value="conservative">Conservative (Detailed, 12-15 tasks)</option>
+          <option value="aggressive" className="text-gray-900 bg-white">Aggressive (Fast, 8-9 tasks)</option>
+          <option value="moderate" className="text-gray-900 bg-white">Moderate (Balanced, 10-12 tasks)</option>
+          <option value="conservative" className="text-gray-900 bg-white">Conservative (Detailed, 12-15 tasks)</option>
         </select>
       </div>
 
@@ -107,7 +107,7 @@ export function GoalForm({ onSuccess }: GoalFormProps) {
           type="date"
           {...register('deadline')}
           min={new Date().toISOString().split('T')[0]}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
         />
       </div>
 
@@ -121,7 +121,7 @@ export function GoalForm({ onSuccess }: GoalFormProps) {
           {...register('max_hours_per_day', { valueAsNumber: true })}
           min={1}
           max={24}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
         />
       </div>
 
@@ -148,7 +148,7 @@ export function GoalForm({ onSuccess }: GoalFormProps) {
             value={dateInput}
             onChange={(e) => setDateInput(e.target.value)}
             min={new Date().toISOString().split('T')[0]}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
           />
           <button
             type="button"

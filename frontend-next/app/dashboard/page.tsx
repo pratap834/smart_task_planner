@@ -11,10 +11,13 @@ import type { Plan } from '@/types/api';
 export default function DashboardPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const { data: plans, isLoading } = usePlans();
+  const { data: plans, isLoading, refetch } = usePlans();
 
-  const handlePlanCreated = (plan: any) => {
+  const handlePlanCreated = async (plan: any) => {
     setShowCreateForm(false);
+    // Refresh the plans list
+    await refetch();
+    // Show the newly created plan
     setSelectedPlan(plan);
   };
 

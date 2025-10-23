@@ -190,8 +190,8 @@ async def create_plan(request: PlanCreateRequest):
         )
         await goal.insert()
         
-        # Generate plan using LLM (Gemini)
-        llm_response = await llm_service.generate_plan(
+        # Generate plan using LLM (Gemini) - NOT async
+        llm_response = llm_service.generate_plan(
             goal_text=request.goal_text,
             constraints=request.constraints,
             plan_type=request.plan_type
@@ -199,27 +199,79 @@ async def create_plan(request: PlanCreateRequest):
         
         # Convert LLM tasks to task objects
         task_list = []
-        for llm_task in llm_response.tasks:
+        for idx, llm_task in enumerate(llm_response.tasks):
+            
+            # Handle both dict and object formats
+            if isinstance(llm_task, dict):
+                task_id = llm_task.get("id")
+                title = llm_task.get("title")
+                description = llm_task.get("description")
+                duration_days = llm_task.get("duration_days")
+                depends_on = llm_task.get("depends_on", [])
+                priority = llm_task.get("priority", "Medium")
+                confidence = llm_task.get("confidence", 1.0)
+            else:
+                # It's a Pydantic model
+                task_id = llm_task.id
+                title = llm_task.title
+                description = llm_task.description
+                duration_days = llm_task.duration_days
+                depends_on = llm_task.depends_on
+                priority = llm_task.priority
+                confidence = llm_task.confidence
+            
             task_list.append({
-                "task_id": llm_task.id,
-                "title": llm_task.title,
-                "description": llm_task.description,
-                "duration_days": llm_task.duration_days,
-                "depends_on": llm_task.depends_on,
-                "priority": llm_task.priority,
-                "confidence": llm_task.confidence,
+                "task_id": task_id,
+                "title": title,
+                "description": description,
+                "duration_days": duration_days,
+                "depends_on": depends_on,
+                "priority": priority,
+                "confidence": confidence,
                 "status": TaskStatus.PENDING
             })
         
-        # Assign dates to tasks
-        task_list = plan_generator.assign_dates(
-            task_list,
+        # Convert dicts to TaskResponse objects for assign_dates
+        task_response_objects = []
+        for task_dict in task_list:
+            task_response_objects.append(TaskResponse(
+                id=task_dict["task_id"],  # Use task_id for both id and task_id
+                task_id=task_dict["task_id"],
+                title=task_dict["title"],
+                description=task_dict["description"],
+                duration_days=task_dict["duration_days"],
+                depends_on=task_dict["depends_on"],
+                priority=TaskPriority(task_dict["priority"]),
+                confidence=task_dict["confidence"],
+                status=TaskStatus(task_dict["status"]),
+                created_at=datetime.now()
+            ))
+        
+        # Assign dates to tasks (modifies objects in place)
+        task_response_objects = plan_generator.assign_dates(
+            task_response_objects,
             request.constraints,
             datetime.now()
         )
         
-        # Calculate critical path
-        critical_path = plan_generator.calculate_critical_path(task_list)
+        # Convert back to dictionaries with dates
+        task_list = []
+        for task_obj in task_response_objects:
+            task_list.append({
+                "task_id": task_obj.id,
+                "title": task_obj.title,
+                "description": task_obj.description,
+                "duration_days": task_obj.duration_days,
+                "depends_on": task_obj.depends_on,
+                "priority": task_obj.priority,
+                "confidence": task_obj.confidence,
+                "status": task_obj.status,
+                "earliest_start": task_obj.earliest_start,
+                "latest_finish": task_obj.latest_finish
+            })
+        
+        # Calculate critical path (needs TaskResponse objects)
+        critical_path = plan_generator.calculate_critical_path(task_response_objects)
         
         # Calculate total duration and estimated completion
         total_duration = max([t.get("duration_days", 0) for t in task_list], default=0)
